@@ -8,9 +8,20 @@ import org.junit.Test;
 public class DefaultControllerTest {
     
     private class SimpleRequest implements Request {
+        private static final String DEFAULT_NAME = "Test";
+        private String name;
+        
+        public SimpleRequest() {
+            this(DEFAULT_NAME);
+        }
+        
+        public SimpleRequest(String name) {
+            this.name = name;
+        }
+        
         @Override
         public String getName() {
-            return "Test";
+            return name;
         }
     }
     
@@ -19,6 +30,15 @@ public class DefaultControllerTest {
         @Override
         public Response process(Request request) throws Exception {
             return new SimpleResponse();
+        }
+        
+    }
+    
+    private class SimpleExceptionHandler implements RequestHandler {
+
+        @Override
+        public Response process(Request request) throws Exception {
+            throw new Exception("error processing request");
         }
         
     }
@@ -67,5 +87,27 @@ public class DefaultControllerTest {
         assertEquals("response should be same response", 
                 new SimpleResponse(), response);
     }
-
+    
+    @Test
+    public void testProcessRequestAnswerErrorResponse() {
+        Request request = new SimpleRequest("testError");
+        RequestHandler handler = new SimpleExceptionHandler();
+        controller.addRequestHandler(request, handler);
+        Response response = controller.processRequest(request);
+        assertNotNull("must not return a null response", response);
+        assertEquals("should return type of ErrorResponse response", ErrorResponse.class, response.getClass());
+    }
+    
+    @Test (expected=RuntimeException.class)
+    public void testGetHendlerNotDefined() {
+        Request request = new SimpleRequest("testNotDefined");
+        controller.getHandler(request);
+    }
+    
+    @Test (expected=RuntimeException.class)
+    public void testAddDuplicateRequestHander() {
+        Request request = new SimpleRequest();
+        RequestHandler requestHandler = new SimpleRequestHandler();
+        controller.addRequestHandler(request, requestHandler);
+    }
 }
