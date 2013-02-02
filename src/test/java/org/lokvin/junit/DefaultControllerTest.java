@@ -110,4 +110,19 @@ public class DefaultControllerTest {
         RequestHandler requestHandler = new SimpleRequestHandler();
         controller.addRequestHandler(request, requestHandler);
     }
+    
+    @Test (timeout=250)
+    public void testProcessMultiRequestTimeout() {
+        Request request;
+        Response response;
+        RequestHandler handler = new SimpleRequestHandler();
+        for (int i=0; i<100000; i++) {
+            request = new SimpleRequest("simplerequest" + i);
+            controller.addRequestHandler(request, handler);
+            response = controller.processRequest(request);
+            assertNotNull("response must not be null", response);
+            assertSame("the response type shoule same with SimpleResponse", 
+                    SimpleResponse.class, response.getClass());
+        }
+    }
 }
