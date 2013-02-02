@@ -17,4 +17,10 @@ public class ErrorResponse implements Response {
         return originalException;
     }
 
+    @Override
+    public String getName() {
+        
+        return "ErrorResponse";
+    }
+
 }
