@@ -1,8 +1,11 @@
 package org.lokvin.junit;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertSame;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class DefaultControllerTest {
@@ -111,7 +114,8 @@ public class DefaultControllerTest {
         controller.addRequestHandler(request, requestHandler);
     }
     
-    @Test (timeout=250)
+    @Test(timeout=150)
+    @Ignore(value="ignore now util decide timeout limit")
     public void testProcessMultiRequestTimeout() {
         Request request;
         Response response;
